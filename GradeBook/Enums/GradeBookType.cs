@@ -1,4 +1,4 @@
-namespace GradeBook.Enums;
+namespace GradeBook.Enums
 {
     public enum GradeBookType
     {
@@ -7,5 +7,5 @@ namespace GradeBook.Enums;
         ESNU,
         OneToFour,
         SixPoint
-    };
-};
+    }
+}
