@@ -10,4 +10,4 @@ namespace GradeBook.GradeBooks
         }
     }
 }
-© 2020 GitHub,
+
