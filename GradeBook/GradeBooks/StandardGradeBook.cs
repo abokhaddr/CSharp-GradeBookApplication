@@ -1,5 +1,5 @@
-using System;
-using GradeBook.Enums;
+useing System;
+useing GradeBook.Enums;
 
 namespace GradeBook.GradeBooks
 {
@@ -10,4 +10,4 @@ namespace GradeBook.GradeBooks
             Type = GradeBookType.Standard;
         }
     }
-};
+}
