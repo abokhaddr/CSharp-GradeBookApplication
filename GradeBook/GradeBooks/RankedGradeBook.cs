@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
-
+using GradeBook.Enums
 namespace GradeBook.GradeBooks
 {
     public class RankedGradeBook : BaseGradeBook
     {
         public RankedGradeBook(string name) : base(name)
         {
-            Type = Enums.GradeBookType.Ranked;
+            Type = GradeBookType.Ranked;
         }
 
         public override char GetLetterGrade(double averageGrade)
