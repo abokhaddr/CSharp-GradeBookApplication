@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+
 using GradeBook.Enums;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 namespace GradeBook.GradeBooks
 {
     public class BaseGradeBook
@@ -18,12 +20,14 @@ namespace GradeBook.GradeBooks
             Name = name;
             Students = new List<Student>();
         }
+
         public void AddStudent(Student student)
         {
             if (string.IsNullOrEmpty(student.Name))
                 throw new ArgumentException("A Name is required to add a student to a gradebook.");
             Students.Add(student);
         }
+
         public void RemoveStudent(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -36,6 +40,7 @@ namespace GradeBook.GradeBooks
             }
             Students.Remove(student);
         }
+
         public void AddGrade(string name, double score)
         {
             if (string.IsNullOrEmpty(name))
@@ -48,6 +53,7 @@ namespace GradeBook.GradeBooks
             }
             student.AddGrade(score);
         }
+
         public void RemoveGrade(string name, double score)
         {
             if (string.IsNullOrEmpty(name))
@@ -60,6 +66,7 @@ namespace GradeBook.GradeBooks
             }
             student.RemoveGrade(score);
         }
+
         public void ListStudents()
         {
             foreach (var student in Students)
@@ -67,6 +74,7 @@ namespace GradeBook.GradeBooks
                 Console.WriteLine("{0} : {1} : {2}", student.Name, student.Type, student.Enrollment);
             }
         }
+
         public static BaseGradeBook Load(string name)
         {
             if (!File.Exists(name + ".gdbk"))
@@ -74,6 +82,7 @@ namespace GradeBook.GradeBooks
                 Console.WriteLine("Gradebook could not be found.");
                 return null;
             }
+
             using (var file = new FileStream(name + ".gdbk", FileMode.Open, FileAccess.Read))
             {
                 using (var reader = new StreamReader(file))
@@ -83,6 +92,7 @@ namespace GradeBook.GradeBooks
                 }
             }
         }
+
         public void Save()
         {
             using (var file = new FileStream(Name + ".gdbk", FileMode.Create, FileAccess.Write))
@@ -94,6 +104,7 @@ namespace GradeBook.GradeBooks
                 }
             }
         }
+
         public virtual double GetGPA(char letterGrade, StudentType studentType)
         {
             switch (letterGrade)
@@ -111,6 +122,7 @@ namespace GradeBook.GradeBooks
             }
             return 0;
         }
+
         public virtual void CalculateStatistics()
         {
             var allStudentsPoints = 0d;
@@ -121,12 +133,15 @@ namespace GradeBook.GradeBooks
             var standardPoints = 0d;
             var honorPoints = 0d;
             var dualEnrolledPoints = 0d;
+
             foreach (var student in Students)
             {
                 student.LetterGrade = GetLetterGrade(student.AverageGrade);
                 student.GPA = GetGPA(student.LetterGrade, student.Type);
+
                 Console.WriteLine("{0} ({1}:{2}) GPA: {3}.", student.Name, student.LetterGrade, student.AverageGrade, student.GPA);
                 allStudentsPoints += student.AverageGrade;
+
                 switch (student.Enrollment)
                 {
                     case EnrollmentType.Campus:
@@ -142,6 +157,7 @@ namespace GradeBook.GradeBooks
                         internationalPoints += student.AverageGrade;
                         break;
                 }
+
                 switch (student.Type)
                 {
                     case StudentType.Standard:
@@ -155,6 +171,7 @@ namespace GradeBook.GradeBooks
                         break;
                 }
             }
+
             //#todo refactor into it's own method with calculations performed here
             Console.WriteLine("Average Grade of all students is " + (allStudentsPoints / Students.Count));
             if (campusPoints != 0)
@@ -172,11 +189,13 @@ namespace GradeBook.GradeBooks
             if (dualEnrolledPoints != 0)
                 Console.WriteLine("Average for only duel enrolled students is " + (dualEnrolledPoints / Students.Where(e => e.Type == StudentType.DualEnrolled).Count()));
         }
+
         public virtual void CalculateStudentStatistics(string name)
         {
             var student = Students.FirstOrDefault(e => e.Name == name);
             student.LetterGrade = GetLetterGrade(student.AverageGrade);
             student.GPA = GetGPA(student.LetterGrade, student.Type);
+
             Console.WriteLine("{0} ({1}:{2}) GPA: {3}.", student.Name, student.LetterGrade, student.AverageGrade, student.GPA);
             Console.WriteLine();
             Console.WriteLine("Grades:");
@@ -185,6 +204,7 @@ namespace GradeBook.GradeBooks
                 Console.WriteLine(grade);
             }
         }
+
         public virtual char GetLetterGrade(double averageGrade)
         {
             if (averageGrade >= 90)
@@ -198,6 +218,7 @@ namespace GradeBook.GradeBooks
             else
                 return 'F';
         }
+
         /// <summary>
         ///     Converts json to the appropriate grade book type.
         ///     Note: This method contains code that is not recommended practice.
@@ -212,8 +233,10 @@ namespace GradeBook.GradeBooks
                                  from type in assembly.GetTypes()
                                  where type.FullName == "GradeBook.Enums.GradeBookType"
                                  select type).FirstOrDefault();
+
             var jobject = JsonConvert.DeserializeObject<JObject>(json);
             var gradeBookType = jobject.Property("Type")?.Value?.ToString();
+
             // Check if StandardGradeBook exists
             if ((from assembly in AppDomain.CurrentDomain.GetAssemblies()
                  from type in assembly.GetTypes()
@@ -227,11 +250,14 @@ namespace GradeBook.GradeBooks
                 else
                     gradeBookType = Enum.GetName(gradebookEnum, int.Parse(gradeBookType));
             }
+
             // Get GradeBook from the GradeBook.GradeBooks namespace
             var gradebook = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                              from type in assembly.GetTypes()
                              where type.FullName == "GradeBook.GradeBooks." + gradeBookType + "GradeBook"
                              select type).FirstOrDefault();
+
+
             //protection code
             if (gradebook == null)
                 gradebook = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
