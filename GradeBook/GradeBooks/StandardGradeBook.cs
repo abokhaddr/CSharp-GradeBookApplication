@@ -8,4 +8,3 @@ namespace GradeBook.GradeBooks
             Type = GradeBookType.Standard;
         }
     }
-}
