@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace GradeBook.GradeBooks
 {
-    public class RankedGradeBook : BaseGradeBook
+    public class StandardGradeBook: BaseGradeBook
     {
-        public RankedGradeBook(string name) : base(name)
+        public StandardGradeBook(string name) : base(name)
         {
-            Type = Enums.GradeBookType.Ranked;
+            Type = Enums.GradeBookType.Standard;
         }
-  }
+    }
 }  
