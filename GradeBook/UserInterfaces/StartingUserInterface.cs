@@ -1,6 +1,5 @@
-﻿using GradeBook.GradeBooks;
+using GradeBook.GradeBooks;
 using System;
-
 namespace GradeBook.UserInterfaces
 {
     public static class StartingUserInterface
@@ -16,7 +15,6 @@ namespace GradeBook.UserInterfaces
                 CommandRoute(command);
             }
         }
-
         public static void CommandRoute(string command)
         {
             if (command.StartsWith("create"))
@@ -30,8 +28,7 @@ namespace GradeBook.UserInterfaces
             else
                 Console.WriteLine("{0} was not recognized, please try again.", command);
         }
-
-          public static void CreateCommand(string command)
+        public static void CreateCommand(string command)
         {
             var parts = command.Split(' ');
             if (parts.Length != 2)
@@ -39,15 +36,12 @@ namespace GradeBook.UserInterfaces
             {
                 Console.WriteLine("Command not valid, Create requires a name.");
                 return;
-        
-        
-        
+            }
             var name = parts[1];
             BaseGradeBook gradeBook = new BaseGradeBook(name);
             Console.WriteLine("Created gradebook {0}.", name);
             GradeBookUserInterface.CommandLoop(gradeBook);
         }
-
         public static void LoadCommand(string command)
         {
             var parts = command.Split(' ');
@@ -58,13 +52,10 @@ namespace GradeBook.UserInterfaces
             }
             var name = parts[1];
             var gradeBook = BaseGradeBook.Load(name);
-
             if (gradeBook == null)
                 return;
-
             GradeBookUserInterface.CommandLoop(gradeBook);
         }
-
         public static void HelpCommand()
         {
             Console.WriteLine();
